@@ -1,0 +1,72 @@
+name: cremi_a_x8_transformer_stage1
+scale: 8
+save_checkpoint_freq: 2000.0
+datasets:
+  train:
+    name: train
+    mode: train
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: cremiA
+    data_folder_gt: cremi_gt
+    data_folder_lr: cremi_bic_downsample_h5_x8
+    train_split: 100
+    test_split: 25
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+    n_workers: 8
+    batch_size: 2
+  val:
+    name: val
+    mode: val
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: cremiA
+    data_folder_gt: cremi_gt
+    data_folder_lr: cremi_bic_downsample_h5_x8
+    train_split: 100
+    test_split: 25
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+network:
+  w_att: true
+  scale: 8
+pretrain: {}
+train:
+  current_step: 0
+  start_epoch: 0
+  lr_G: 5.0e-05
+  lr_scheme: CosineAnnealingLR_Restart
+  beta1: 0.9
+  beta2: 0.99
+  niter: 60000
+  T_period:
+  - 60000
+  - 20000
+  restarts:
+  - 60000
+  eta_min: 1.0e-05
+  val_freq: 2000.0
+  loss_type: l1
+  w_BCE_loss: false
+  logger_freq: 100
+  other_lr_multiplier: 0.1
+  restart_weights:
+  - 1
+  validation_start: 0
+stage: 1
+backbone: transformer
+setting: cremi_a_x8_transformer
+checkpoint: checkpoints/cremi_a_x8_transformer/stage1.pth

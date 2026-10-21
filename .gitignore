@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.pth
+*.pt
+*.ckpt
+*.state
+*.h5
+*.hdf
+*.hdf5
+checkpoints/*/
+outputs/
+results/
+datasets/
+*.tar.gz
+*.log

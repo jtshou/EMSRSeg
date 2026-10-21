@@ -1,0 +1,77 @@
+name: cremi_c_x16_transformer_stage2
+scale: 16
+save_checkpoint_freq: 500.0
+datasets:
+  train:
+    name: train
+    mode: train
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: cremiC
+    data_folder_gt: cremi_gt
+    data_folder_lr: cremi_bic_downsample_h5_x16
+    train_split: 100
+    test_split: 25
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+    n_workers: 8
+    batch_size: 8
+  val:
+    name: val
+    mode: val
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: cremiC
+    data_folder_gt: cremi_gt
+    data_folder_lr: cremi_bic_downsample_h5_x16
+    train_split: 100
+    test_split: 25
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+network:
+  w_att: true
+  scale: 16
+  timestep_l:
+  - 200
+  - 150
+  - 100
+  - 50
+pretrain:
+  stage1_model_path: checkpoints/cremi_c_x16_transformer/stage1.pth
+train:
+  current_step: 0
+  start_epoch: 0
+  lr_G: 0.0001
+  lr_scheme: CosineAnnealingLR_Restart
+  beta1: 0.9
+  beta2: 0.99
+  niter: 80000
+  T_period:
+  - 80000
+  - 20000
+  restarts:
+  - 80000
+  eta_min: 1.0e-05
+  val_freq: 500.0
+  logger_freq: 100
+  loss_prior_factor: 0.1
+  other_lr_multiplier: 0.1
+  restart_weights:
+  - 1
+  validation_start: 0
+stage: 2
+backbone: transformer
+setting: cremi_c_x16_transformer
+checkpoint: checkpoints/cremi_c_x16_transformer/stage2.pth

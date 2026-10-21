@@ -1,0 +1,78 @@
+name: mec_blur_shot_x4_cnn_stage2
+scale: 4
+save_checkpoint_freq: 400.0
+datasets:
+  train:
+    name: train
+    mode: train
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: wafer
+    data_folder_gt: wafer_gt
+    data_folder_lr: wafer_emfwd_downsample_h5_x4
+    train_split: 125
+    test_split: 125
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+    n_workers: 8
+    batch_size: 8
+  val:
+    name: val
+    mode: val
+    if_dilate: true
+    shift_channels: null
+    output_nc: 12
+    separate_weight: false
+    if_sparse: false
+    dataset_name: wafer
+    data_folder_gt: wafer_gt
+    data_folder_lr: wafer_emfwd_downsample_h5_x4
+    train_split: 125
+    test_split: 125
+    if_scale_aug: false
+    if_filp_aug: true
+    if_elastic_aug: false
+    if_intensity_aug: false
+    if_rotation_aug: false
+network:
+  w_att: true
+  scale: 4
+  timestep_l:
+  - 200
+  - 150
+  - 100
+  - 50
+pretrain:
+  stage1_model_path: checkpoints/mec_blur_shot_x4_cnn/stage1.pth
+train:
+  current_step: 0
+  start_epoch: 0
+  lr_G: 0.0001
+  lr_scheme: CosineAnnealingLR_Restart
+  beta1: 0.9
+  beta2: 0.99
+  niter: 40000
+  T_period:
+  - 40000
+  - 40000
+  restarts:
+  - 40000
+  eta_min: 1.0e-05
+  val_freq: 400.0
+  skip_first_steps: 800
+  logger_freq: 100
+  loss_prior_factor: 0.1
+  other_lr_multiplier: 10.0
+  restart_weights:
+  - 1
+  validation_start: 800
+stage: 2
+backbone: cnn
+setting: mec_blur_shot_x4_cnn
+checkpoint: checkpoints/mec_blur_shot_x4_cnn/stage2.pth
